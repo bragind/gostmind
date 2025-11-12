@@ -1,0 +1,28 @@
+[project]
+name = "gostmind"
+version = "0.1.0"
+dependencies = [
+  "fastapi>=0.110.0",
+  "pydantic>=2.5",
+  "sqlalchemy[asyncio]>=2.0",
+  "asyncpg",
+  "alembic",
+  "redis[asyncio]",
+  "chromadb>=0.4.20",
+  "openai>=1.10",
+  "httpx",
+  "python-multipart",  # для загрузки файлов
+  "structlog",
+  "uvicorn[standard]",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest",
+  "pytest-asyncio",
+  "httpx",
+  "respx",
+  "ruff",
+  "mypy",
+  "pre-commit",
+]

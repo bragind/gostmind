@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://user:pass@db:5432/gostmind
+      - REDIS_URL=redis://cache:6379/0
+      - CHROMA_PATH=/app/data/chroma
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    volumes:
+      - .//app/data
+    depends_on:
+      - db
+      - cache
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: gostmind
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+    volumes:
+      - pg/var/lib/postgresql/data
+
+  cache:
+    image: redis:7-alpine
+
+volumes:
+  pg

@@ -38,7 +38,7 @@ jobs:
 
       - name: Run ruff formatter check
         run: |
-          ruff format --check src/ scripts/ tests/ || (ruff format src/ scripts/ tests/ && exit 1)
+          ruff format --check src/ scripts/ tests/
 
       - name: Run mypy type checker
         run: |

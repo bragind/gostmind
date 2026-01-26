@@ -11,7 +11,6 @@ dependencies = [
   "redis[asyncio]",
   "chromadb>=0.4.20",
   "httpx>=0.25.0",
-  "httpx",
   "python-multipart",  # для загрузки файлов
   "structlog",
   "uvicorn[standard]",

@@ -63,9 +63,7 @@ async def process_query(
         embedder = get_local_embedder()
 
         # Создание use case
-        use_case = QueryRAGUseCase(
-            llm_client=llm_client, embedder=embedder, collection=collection
-        )
+        use_case = QueryRAGUseCase(llm_client=llm_client, embedder=embedder, collection=collection)
 
         # Выполнение запроса
         domain_query = Query(text=request.query, user_id=user_id)
@@ -88,9 +86,7 @@ async def process_query(
         )
 
     except RateLimitExceededError as e:
-        raise HTTPException(
-            status_code=status.HTTP_429_TOO_MANY_REQUESTS, detail=str(e)
-        )
+        raise HTTPException(status_code=status.HTTP_429_TOO_MANY_REQUESTS, detail=str(e))
     except VectorStoreError as e:
         logger.error("Vector store error", error=str(e), query_id=query_id)
         raise HTTPException(

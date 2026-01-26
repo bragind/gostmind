@@ -23,7 +23,17 @@ dev = [
   "pytest-asyncio",
   "httpx",
   "respx",
-  "ruff",
+  "ruff>=0.1.0",
   "mypy",
   "pre-commit",
 ]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"

@@ -27,14 +27,10 @@ class Embedder:
     async def embed_batch(self, texts: List[str]) -> List[List[float]]:
         """Создать эмбеддинги для батча текстов."""
         try:
-            response = await self.client.embeddings.create(
-                model=self.model, input=texts
-            )
+            response = await self.client.embeddings.create(model=self.model, input=texts)
             return [item.embedding for item in response.data]
         except Exception as e:
-            logger.error(
-                "Failed to create batch embeddings", error=str(e), count=len(texts)
-            )
+            logger.error("Failed to create batch embeddings", error=str(e), count=len(texts))
             raise
 
 

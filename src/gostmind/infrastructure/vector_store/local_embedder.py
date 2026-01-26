@@ -23,9 +23,7 @@ class LocalEmbedder:
         try:
             payload = {"model": self.model, "prompt": text}
 
-            response = await self.client.post(
-                f"{self.base_url}/api/embeddings", json=payload
-            )
+            response = await self.client.post(f"{self.base_url}/api/embeddings", json=payload)
             response.raise_for_status()
             result = response.json()
             embedding = result.get("embedding", [])
@@ -35,9 +33,7 @@ class LocalEmbedder:
 
             return embedding
         except Exception as e:
-            logger.error(
-                "Failed to create embedding", error=str(e), text_length=len(text)
-            )
+            logger.error("Failed to create embedding", error=str(e), text_length=len(text))
             raise
 
     async def embed_batch(self, texts: List[str]) -> List[List[float]]:

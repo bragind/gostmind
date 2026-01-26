@@ -19,9 +19,7 @@ class HealthResponse(BaseModel):
 
 
 @router.get("/health", response_model=HealthResponse)
-async def health_check(
-    redis=Depends(get_redis), vector_store=Depends(get_vector_store)
-):
+async def health_check(redis=Depends(get_redis), vector_store=Depends(get_vector_store)):
     """Проверка здоровья сервиса и зависимостей."""
     services_status = {}
 
@@ -47,6 +45,4 @@ async def health_check(
     all_healthy = all(s == "healthy" for s in services_status.values())
     overall_status = "healthy" if all_healthy else "degraded"
 
-    return HealthResponse(
-        status=overall_status, version="0.1.0", services=services_status
-    )
+    return HealthResponse(status=overall_status, version="0.1.0", services=services_status)

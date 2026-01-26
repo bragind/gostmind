@@ -60,9 +60,7 @@ def create_app() -> FastAPI:
     # CORS (настройте по необходимости для production)
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=settings.cors_origins
-        if hasattr(settings, "cors_origins")
-        else ["*"],
+        allow_origins=settings.cors_origins if hasattr(settings, "cors_origins") else ["*"],
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
@@ -78,17 +76,13 @@ def create_app() -> FastAPI:
         )
 
     @app.exception_handler(RateLimitExceededError)
-    async def rate_limit_exception_handler(
-        request: Request, exc: RateLimitExceededError
-    ):
+    async def rate_limit_exception_handler(request: Request, exc: RateLimitExceededError):
         return JSONResponse(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS, content={"detail": str(exc)}
         )
 
     @app.exception_handler(RequestValidationError)
-    async def validation_exception_handler(
-        request: Request, exc: RequestValidationError
-    ):
+    async def validation_exception_handler(request: Request, exc: RequestValidationError):
         logger.warning("Validation error", errors=exc.errors(), path=request.url.path)
         return JSONResponse(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
@@ -97,9 +91,7 @@ def create_app() -> FastAPI:
 
     @app.exception_handler(Exception)
     async def general_exception_handler(request: Request, exc: Exception):
-        logger.error(
-            "Unhandled exception", error=str(exc), path=request.url.path, exc_info=True
-        )
+        logger.error("Unhandled exception", error=str(exc), path=request.url.path, exc_info=True)
         return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             content={"detail": "Внутренняя ошибка сервера"},

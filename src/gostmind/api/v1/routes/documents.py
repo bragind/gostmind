@@ -53,9 +53,7 @@ async def upload_document(
 
         chunks_count = await processor.process_standard(standard)
 
-        logger.info(
-            "Document uploaded and indexed", gost=gost_number, chunks=chunks_count
-        )
+        logger.info("Document uploaded and indexed", gost=gost_number, chunks=chunks_count)
 
         return DocumentUploadResponse(
             message="Документ успешно загружен и проиндексирован",

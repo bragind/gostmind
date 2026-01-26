@@ -35,9 +35,7 @@ class Settings(BaseSettings):
     llm_timeout: float = Field(default=120.0, env="LLM_TIMEOUT")
 
     # Embeddings (Ollama)
-    embedding_base_url: str = Field(
-        default="http://localhost:11434", env="EMBEDDING_BASE_URL"
-    )
+    embedding_base_url: str = Field(default="http://localhost:11434", env="EMBEDDING_BASE_URL")
     embedding_model: str = Field(default="llama3", env="EMBEDDING_MODEL")
 
     # RAG Settings

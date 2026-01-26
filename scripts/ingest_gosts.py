@@ -89,9 +89,7 @@ async def main():
                 file_path=str(file_path),
             )
             standards.append(standard)
-            logger.info(
-                "Prepared standard for indexing", gost=gost_number, file=file_path.name
-            )
+            logger.info("Prepared standard for indexing", gost=gost_number, file=file_path.name)
         except Exception as e:
             logger.error("Error reading file", file=file_path.name, error=str(e))
 

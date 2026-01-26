@@ -144,14 +144,8 @@ class QueryRAGUseCase:
         except Exception as e:
             logger.error("Error processing query", query=query.text, error=str(e))
             if "chroma" in str(e).lower() or "vector" in str(e).lower():
-                raise VectorStoreError(
-                    f"Ошибка работы с векторным хранилищем: {str(e)}"
-                )
-            elif (
-                "ollama" in str(e).lower()
-                or "llm" in str(e).lower()
-                or "http" in str(e).lower()
-            ):
+                raise VectorStoreError(f"Ошибка работы с векторным хранилищем: {str(e)}")
+            elif "ollama" in str(e).lower() or "llm" in str(e).lower() or "http" in str(e).lower():
                 raise LLMError(f"Ошибка работы с LLM: {str(e)}")
             else:
                 raise LLMError(f"Неожиданная ошибка при обработке запроса: {str(e)}")

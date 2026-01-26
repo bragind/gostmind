@@ -51,9 +51,7 @@ class OllamaClient:
 
                         chunk = json.loads(line)
                         if "message" in chunk:
-                            result["message"]["content"] += chunk["message"].get(
-                                "content", ""
-                            )
+                            result["message"]["content"] += chunk["message"].get("content", "")
                 return result
             else:
                 return response.json()

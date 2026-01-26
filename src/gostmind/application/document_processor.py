@@ -42,9 +42,7 @@ class DocumentProcessor:
                 chunks.append({"text": chunk_text, "gost_number": gost_number})
 
                 # Начать новый чанк с перекрытием
-                overlap_words = current_chunk[
-                    -self.chunk_overlap // 10 :
-                ]  # Примерное перекрытие
+                overlap_words = current_chunk[-self.chunk_overlap // 10 :]  # Примерное перекрытие
                 current_chunk = overlap_words + [word]
                 current_length = sum(len(w) + 1 for w in current_chunk)
             else:
@@ -99,9 +97,7 @@ class DocumentProcessor:
             return len(chunks)
 
         except Exception as e:
-            logger.error(
-                "Error processing standard", gost=standard.number, error=str(e)
-            )
+            logger.error("Error processing standard", gost=standard.number, error=str(e))
             raise VectorStoreError(f"Ошибка при индексации ГОСТ: {str(e)}")
 
     async def process_batch(self, standards: List[Standard]) -> dict:
@@ -120,8 +116,6 @@ class DocumentProcessor:
                 results["total_chunks"] += chunks_count
             except Exception as e:
                 results["failed"] += 1
-                logger.error(
-                    "Failed to process standard", gost=standard.number, error=str(e)
-                )
+                logger.error("Failed to process standard", gost=standard.number, error=str(e))
 
         return results

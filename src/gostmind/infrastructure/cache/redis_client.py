@@ -16,9 +16,7 @@ async def get_redis_client() -> aioredis.Redis:
     global _redis_client
     if _redis_client is None:
         _redis_client = aioredis.from_url(
-            str(settings.redis_url),
-            encoding="utf-8",
-            decode_responses=True
+            str(settings.redis_url), encoding="utf-8", decode_responses=True
         )
         logger.info("Redis client initialized", url=str(settings.redis_url))
     return _redis_client
@@ -35,10 +33,10 @@ async def close_redis_client() -> None:
 
 class CacheService:
     """Сервис для работы с кэшем."""
-    
+
     def __init__(self, redis_client: aioredis.Redis):
         self.redis = redis_client
-    
+
     async def get(self, key: str) -> Optional[str]:
         """Получить значение из кэша."""
         try:
@@ -46,7 +44,7 @@ class CacheService:
         except Exception as e:
             logger.warning("Cache get error", key=key, error=str(e))
             return None
-    
+
     async def set(self, key: str, value: str, ttl: int = 3600) -> bool:
         """Установить значение в кэш с TTL."""
         try:
@@ -55,7 +53,7 @@ class CacheService:
         except Exception as e:
             logger.warning("Cache set error", key=key, error=str(e))
             return False
-    
+
     async def get_json(self, key: str) -> Optional[dict]:
         """Получить JSON из кэша."""
         value = await self.get(key)
@@ -65,7 +63,7 @@ class CacheService:
             except json.JSONDecodeError:
                 return None
         return None
-    
+
     async def set_json(self, key: str, value: dict, ttl: int = 3600) -> bool:
         """Установить JSON в кэш."""
         try:
@@ -74,7 +72,7 @@ class CacheService:
         except Exception as e:
             logger.warning("Cache set_json error", key=key, error=str(e))
             return False
-    
+
     async def delete(self, key: str) -> bool:
         """Удалить ключ из кэша."""
         try:

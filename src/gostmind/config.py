@@ -13,8 +13,7 @@ class Settings(BaseSettings):
     # Security
     api_key: str = Field(..., env="API_KEY")  # для MVP — простая авторизация
     cors_origins: List[str] = Field(
-        default=["*"],
-        env="CORS_ORIGINS"
+        default=["*"], env="CORS_ORIGINS"
     )  # В production укажите конкретные домены
 
     # Database
@@ -34,9 +33,11 @@ class Settings(BaseSettings):
     llm_temperature: float = Field(default=0.3, env="LLM_TEMPERATURE")
     llm_max_tokens: int = Field(default=1000, env="LLM_MAX_TOKENS")
     llm_timeout: float = Field(default=120.0, env="LLM_TIMEOUT")
-    
+
     # Embeddings (Ollama)
-    embedding_base_url: str = Field(default="http://localhost:11434", env="EMBEDDING_BASE_URL")
+    embedding_base_url: str = Field(
+        default="http://localhost:11434", env="EMBEDDING_BASE_URL"
+    )
     embedding_model: str = Field(default="llama3", env="EMBEDDING_MODEL")
 
     # RAG Settings

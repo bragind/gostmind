@@ -10,21 +10,21 @@ logger = structlog.get_logger(__name__)
 
 class OllamaClient:
     """Клиент для работы с локальной LLM через Ollama API."""
-    
+
     def __init__(self, base_url: str, model: str, timeout: float = 120.0):
-        self.base_url = base_url.rstrip('/')
+        self.base_url = base_url.rstrip("/")
         self.model = model
         self.timeout = timeout
         self.client = httpx.AsyncClient(timeout=timeout)
         logger.info("Ollama client initialized", base_url=base_url, model=model)
-    
+
     async def chat(
         self,
         messages: List[Dict[str, str]],
         temperature: float = 0.3,
         max_tokens: Optional[int] = None,
         stream: bool = False,
-        **kwargs
+        **kwargs,
     ) -> Dict[str, Any]:
         """Отправить запрос на генерацию текста через chat API."""
         try:
@@ -32,21 +32,15 @@ class OllamaClient:
                 "model": self.model,
                 "messages": messages,
                 "stream": stream,
-                "options": {
-                    "temperature": temperature,
-                    **kwargs
-                }
+                "options": {"temperature": temperature, **kwargs},
             }
-            
+
             if max_tokens:
                 payload["options"]["num_predict"] = max_tokens
-            
-            response = await self.client.post(
-                f"{self.base_url}/api/chat",
-                json=payload
-            )
+
+            response = await self.client.post(f"{self.base_url}/api/chat", json=payload)
             response.raise_for_status()
-            
+
             if stream:
                 # Для streaming нужно обрабатывать поток
                 # Пока возвращаем последний чанк
@@ -54,41 +48,39 @@ class OllamaClient:
                 async for line in response.aiter_lines():
                     if line:
                         import json
+
                         chunk = json.loads(line)
                         if "message" in chunk:
-                            result["message"]["content"] += chunk["message"].get("content", "")
+                            result["message"]["content"] += chunk["message"].get(
+                                "content", ""
+                            )
                 return result
             else:
                 return response.json()
         except httpx.HTTPError as e:
             logger.error("Ollama API error", error=str(e))
             raise
-    
+
     async def generate(
         self,
         prompt: str,
         temperature: float = 0.3,
         max_tokens: Optional[int] = None,
-        **kwargs
+        **kwargs,
     ) -> str:
         """Генерировать текст по промпту."""
         try:
             payload = {
                 "model": self.model,
                 "prompt": prompt,
-                "options": {
-                    "temperature": temperature,
-                    **kwargs
-                }
+                "options": {"temperature": temperature, **kwargs},
             }
-            
+
             if max_tokens:
                 payload["options"]["num_predict"] = max_tokens
-            
+
             response = await self.client.post(
-                f"{self.base_url}/api/generate",
-                json=payload,
-                timeout=self.timeout
+                f"{self.base_url}/api/generate", json=payload, timeout=self.timeout
             )
             response.raise_for_status()
             result = response.json()
@@ -96,19 +88,14 @@ class OllamaClient:
         except httpx.HTTPError as e:
             logger.error("Ollama generate error", error=str(e))
             raise
-    
+
     async def embeddings(self, text: str) -> List[float]:
         """Получить эмбеддинг для текста."""
         try:
-            payload = {
-                "model": self.model,
-                "prompt": text
-            }
-            
+            payload = {"model": self.model, "prompt": text}
+
             response = await self.client.post(
-                f"{self.base_url}/api/embeddings",
-                json=payload,
-                timeout=self.timeout
+                f"{self.base_url}/api/embeddings", json=payload, timeout=self.timeout
             )
             response.raise_for_status()
             result = response.json()
@@ -116,14 +103,14 @@ class OllamaClient:
         except httpx.HTTPError as e:
             logger.error("Ollama embeddings error", error=str(e))
             raise
-    
+
     async def close(self):
         """Закрыть HTTP клиент."""
         await self.client.aclose()
-    
+
     async def __aenter__(self):
         return self
-    
+
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         await self.close()
 
@@ -138,7 +125,7 @@ def get_ollama_client() -> OllamaClient:
         _ollama_client = OllamaClient(
             base_url=settings.llm_base_url,
             model=settings.llm_model,
-            timeout=settings.llm_timeout
+            timeout=settings.llm_timeout,
         )
         logger.info("Ollama client created", model=settings.llm_model)
     return _ollama_client

@@ -6,6 +6,7 @@ from datetime import datetime
 
 class DocumentUploadResponse(BaseModel):
     """Схема ответа на загрузку документа."""
+
     message: str
     gost_number: str
     chunks_count: int
@@ -14,6 +15,7 @@ class DocumentUploadResponse(BaseModel):
 
 class DocumentInfo(BaseModel):
     """Информация о документе."""
+
     gost_number: str
     title: str
     file_path: Optional[str] = None

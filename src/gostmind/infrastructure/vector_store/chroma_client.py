@@ -21,7 +21,7 @@ def get_chroma_client() -> chromadb.ClientAPI:
             settings=ChromaSettings(
                 anonymized_telemetry=False,
                 allow_reset=True,
-            )
+            ),
         )
         logger.info("ChromaDB client initialized", path=settings.chroma_path)
     return _chroma_client
@@ -37,8 +37,7 @@ def get_collection(name: str = "gosts") -> chromadb.Collection:
             logger.info("ChromaDB collection loaded", collection=name)
         except Exception:
             _collection = client.create_collection(
-                name=name,
-                metadata={"description": "ГОСТ документы для RAG поиска"}
+                name=name, metadata={"description": "ГОСТ документы для RAG поиска"}
             )
             logger.info("ChromaDB collection created", collection=name)
     return _collection

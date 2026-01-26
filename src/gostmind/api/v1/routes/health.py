@@ -12,6 +12,7 @@ router = APIRouter()
 
 class HealthResponse(BaseModel):
     """Схема ответа health check."""
+
     status: str
     version: str
     services: dict
@@ -19,12 +20,11 @@ class HealthResponse(BaseModel):
 
 @router.get("/health", response_model=HealthResponse)
 async def health_check(
-    redis=Depends(get_redis),
-    vector_store=Depends(get_vector_store)
+    redis=Depends(get_redis), vector_store=Depends(get_vector_store)
 ):
     """Проверка здоровья сервиса и зависимостей."""
     services_status = {}
-    
+
     # Проверка Redis
     try:
         await redis.ping()
@@ -32,7 +32,7 @@ async def health_check(
     except Exception as e:
         logger.warning("Redis health check failed", error=str(e))
         services_status["redis"] = "unhealthy"
-    
+
     # Проверка ChromaDB
     try:
         client = get_chroma_client()
@@ -42,13 +42,11 @@ async def health_check(
     except Exception as e:
         logger.warning("ChromaDB health check failed", error=str(e))
         services_status["chromadb"] = "unhealthy"
-    
+
     # Общий статус
     all_healthy = all(s == "healthy" for s in services_status.values())
     overall_status = "healthy" if all_healthy else "degraded"
-    
+
     return HealthResponse(
-        status=overall_status,
-        version="0.1.0",
-        services=services_status
+        status=overall_status, version="0.1.0", services=services_status
     )

@@ -33,7 +33,7 @@ async def get_redis():
 
 # DI для Chroma
 async def get_vector_store():
-    return await get_chroma_client()
+    return get_chroma_client()
 
 
 # DI для OpenAI

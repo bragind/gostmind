@@ -1,5 +1,5 @@
 # src/gostmind/deps.py
-from fastapi import Depends, Header, HTTPException, status
+from fastapi import Header, HTTPException, status
 from typing import Annotated, AsyncGenerator
 
 from sqlalchemy.ext.asyncio import AsyncSession

@@ -1,11 +1,10 @@
 # src/gostmind/application/document_processor.py
-from typing import List, Optional
+from typing import List
 import structlog
 import chromadb
 
 from ..domain.models.standard import Standard
 from ..domain.exceptions import VectorStoreError
-from ..infrastructure.vector_store.chroma_client import get_collection
 from ..infrastructure.vector_store.local_embedder import LocalEmbedder
 
 logger = structlog.get_logger(__name__)

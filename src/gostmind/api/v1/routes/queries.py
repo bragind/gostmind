@@ -1,6 +1,5 @@
 # src/gostmind/api/v1/routes/queries.py
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.responses import JSONResponse
 import structlog
 import uuid
 
@@ -11,14 +10,13 @@ from ...deps import (
 )
 from ...domain.models.query import Query
 from ...domain.exceptions import (
-    GOSTMindException,
     VectorStoreError,
     LLMError,
     RateLimitExceededError
 )
 from ...application.query_rag_usecase import QueryRAGUseCase
 from ...infrastructure.vector_store.chroma_client import get_collection
-from ...infrastructure.vector_store.local_embedder import LocalEmbedder, get_local_embedder
+from ...infrastructure.vector_store.local_embedder import get_local_embedder
 from ...infrastructure.cache.redis_client import CacheService
 from ...config import settings
 from ..schemas.query import QueryRequest, QueryResponse

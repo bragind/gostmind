@@ -1,6 +1,5 @@
 # src/gostmind/api/v1/routes/documents.py
 from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
-from fastapi.responses import JSONResponse
 import structlog
 from datetime import datetime
 
@@ -9,8 +8,7 @@ from ...domain.models.standard import Standard
 from ...domain.exceptions import VectorStoreError
 from ...application.document_processor import DocumentProcessor
 from ...infrastructure.vector_store.chroma_client import get_collection
-from ...infrastructure.vector_store.local_embedder import LocalEmbedder, get_local_embedder
-from ...infrastructure.storage.file_ops import FileStorage
+from ...infrastructure.vector_store.local_embedder import get_local_embedder
 from ..schemas.document import DocumentUploadResponse, DocumentInfo
 
 logger = structlog.get_logger(__name__)

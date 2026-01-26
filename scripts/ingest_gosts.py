@@ -10,13 +10,14 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root / "src"))
 
-from gostmind.domain.models.standard import Standard
-from gostmind.application.document_processor import DocumentProcessor
-from gostmind.infrastructure.vector_store.chroma_client import get_collection
-from gostmind.infrastructure.vector_store.local_embedder import LocalEmbedder, get_local_embedder
-from gostmind.infrastructure.storage.file_ops import FileStorage
-from gostmind.config import settings
-import structlog
+# Импорты после изменения sys.path
+from gostmind.domain.models.standard import Standard  # noqa: E402
+from gostmind.application.document_processor import DocumentProcessor  # noqa: E402
+from gostmind.infrastructure.vector_store.chroma_client import get_collection  # noqa: E402
+from gostmind.infrastructure.vector_store.local_embedder import get_local_embedder  # noqa: E402
+from gostmind.infrastructure.storage.file_ops import FileStorage  # noqa: E402
+from gostmind.config import settings  # noqa: E402
+import structlog  # noqa: E402
 
 # Настройка логирования
 structlog.configure(

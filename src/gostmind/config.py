@@ -1,6 +1,5 @@
 # src/gostmind/config.py
-import os
-from typing import Optional, List
+from typing import List
 from pydantic_settings import BaseSettings
 from pydantic import PostgresDsn, RedisDsn, Field, field_validator
 

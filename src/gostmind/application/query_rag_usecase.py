@@ -1,11 +1,9 @@
 # src/gostmind/application/query_rag_usecase.py
-from typing import List, Optional
 import structlog
 import chromadb
 
 from ..domain.models.query import Query, QueryResult
 from ..domain.exceptions import VectorStoreError, LLMError
-from ..infrastructure.vector_store.chroma_client import get_collection
 from ..infrastructure.vector_store.local_embedder import LocalEmbedder
 from ..infrastructure.llm.ollama_client import OllamaClient
 

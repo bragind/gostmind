@@ -1,7 +1,6 @@
 # src/gostmind/infrastructure/storage/s3_client.py
 # Заглушка для будущей интеграции с S3
 # В production можно использовать boto3 или aioboto3
-from typing import Optional
 import structlog
 
 logger = structlog.get_logger(__name__)

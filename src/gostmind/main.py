@@ -5,15 +5,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 import structlog
-import sys
 
 from .config import settings
 from .api.v1.routes import queries, health, documents
 from .domain.exceptions import (
     GOSTMindException,
-    RateLimitExceededError,
-    VectorStoreError,
-    LLMError
+    RateLimitExceededError
 )
 from .deps import verify_api_key
 from .infrastructure.cache.redis_client import close_redis_client

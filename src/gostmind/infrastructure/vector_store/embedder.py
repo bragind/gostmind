@@ -1,9 +1,9 @@
 # src/gostmind/infrastructure/vector_store/embedder.py
+# DEPRECATED: Этот файл оставлен для совместимости
+# Используйте local_embedder.py для работы с Ollama
 from typing import List
 import structlog
 from openai import AsyncOpenAI
-
-from ...config import settings
 
 logger = structlog.get_logger(__name__)
 

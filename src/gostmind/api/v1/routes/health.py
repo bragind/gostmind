@@ -1,10 +1,9 @@
 # src/gostmind/api/v1/routes/health.py
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 import structlog
 
 from ...deps import get_redis, get_vector_store
-from ...infrastructure.cache.redis_client import get_redis_client
 from ...infrastructure.vector_store.chroma_client import get_chroma_client
 
 logger = structlog.get_logger(__name__)
@@ -45,7 +44,7 @@ async def health_check(
         services_status["chromadb"] = "unhealthy"
     
     # Общий статус
-    all_healthy = all(status == "healthy" for status in services_status.values())
+    all_healthy = all(s == "healthy" for s in services_status.values())
     overall_status = "healthy" if all_healthy else "degraded"
     
     return HealthResponse(

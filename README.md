@@ -7,7 +7,7 @@
 GOSTMind - это AI-ассистент, который помогает инженерам быстро находить нужную информацию в ГОСТах. Система использует:
 - **RAG (Retrieval-Augmented Generation)** для поиска релевантных фрагментов ГОСТов
 - **Векторное хранилище (ChromaDB)** для эффективного поиска
-- **OpenAI GPT** для генерации ответов на основе найденных документов
+- **Локальная LLM (Ollama)** для генерации ответов на основе найденных документов
 - **Redis** для кэширования запросов и rate limiting
 
 ## 🏗 Архитектура
@@ -49,7 +49,17 @@ cp .env.example .env
 docker-compose up -d
 ```
 
-4. Индексируйте ГОСТы:
+4. Настройте модели Ollama (опционально, если нужно загрузить модели):
+```bash
+# Модели можно загрузить вручную после запуска контейнера
+docker-compose exec ollama ollama pull llama3
+docker-compose exec ollama ollama pull nomic-embed-text
+
+# Или использовать скрипт
+docker-compose exec ollama bash /app/scripts/setup_ollama.sh
+```
+
+5. Индексируйте ГОСТы:
 ```bash
 # Поместите файлы ГОСТов в data/gosts/
 docker-compose exec app python scripts/ingest_gosts.py
@@ -62,12 +72,19 @@ docker-compose exec app python scripts/ingest_gosts.py
 pip install -e ".[dev]"
 ```
 
-2. Запустите сервисы (PostgreSQL, Redis):
+2. Запустите сервисы (PostgreSQL, Redis, Ollama):
 ```bash
-docker-compose up -d db cache
+docker-compose up -d db cache ollama
 ```
 
-3. Запустите приложение:
+3. Настройте модели Ollama (если еще не настроены):
+```bash
+# В контейнере Ollama
+docker-compose exec ollama ollama pull llama3
+docker-compose exec ollama ollama pull nomic-embed-text
+```
+
+4. Запустите приложение:
 ```bash
 uvicorn gostmind.main:app --reload --host 0.0.0.0 --port 8000
 ```
@@ -111,9 +128,13 @@ DATABASE_URL=postgresql+asyncpg://user:pass@localhost:5432/gostmind
 # Redis
 REDIS_URL=redis://localhost:6379/0
 
-# OpenAI
-OPENAI_API_KEY=your-openai-api-key
-OPENAI_MODEL=gpt-4o-mini
+# LLM (Ollama)
+LLM_BASE_URL=http://localhost:11434
+LLM_MODEL=llama3
+
+# Embeddings (Ollama)
+EMBEDDING_BASE_URL=http://localhost:11434
+EMBEDDING_MODEL=nomic-embed-text
 
 # Векторное хранилище
 CHROMA_PATH=./data/chroma
@@ -156,7 +177,8 @@ mypy src/
 4. **Производительность**:
    - Настройте connection pooling для БД
    - Используйте CDN для статических файлов
-   - Рассмотрите использование более мощных моделей OpenAI для production
+   - Используйте более мощные модели Ollama для production (llama3:70b, mistral:large)
+   - Настройте GPU для ускорения работы LLM
 
 ## 🔧 Улучшения для production
 

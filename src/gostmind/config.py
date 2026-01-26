@@ -29,12 +29,16 @@ class Settings(BaseSettings):
     chroma_path: str = Field(default="./data/chroma", env="CHROMA_PATH")
     vector_store_collection: str = Field(default="gosts", env="VECTOR_STORE_COLLECTION")
 
-    # LLM
-    openai_api_key: str = Field(..., env="OPENAI_API_KEY")
-    openai_model: str = Field(default="gpt-4o-mini", env="OPENAI_MODEL")
-    openai_embedding_model: str = Field(default="text-embedding-3-small", env="OPENAI_EMBEDDING_MODEL")
-    openai_temperature: float = Field(default=0.3, env="OPENAI_TEMPERATURE")
-    openai_max_tokens: int = Field(default=1000, env="OPENAI_MAX_TOKENS")
+    # LLM (Ollama)
+    llm_base_url: str = Field(default="http://localhost:11434", env="LLM_BASE_URL")
+    llm_model: str = Field(default="llama3", env="LLM_MODEL")
+    llm_temperature: float = Field(default=0.3, env="LLM_TEMPERATURE")
+    llm_max_tokens: int = Field(default=1000, env="LLM_MAX_TOKENS")
+    llm_timeout: float = Field(default=120.0, env="LLM_TIMEOUT")
+    
+    # Embeddings (Ollama)
+    embedding_base_url: str = Field(default="http://localhost:11434", env="EMBEDDING_BASE_URL")
+    embedding_model: str = Field(default="llama3", env="EMBEDDING_MODEL")
 
     # RAG Settings
     rag_top_k: int = Field(default=5, env="RAG_TOP_K")

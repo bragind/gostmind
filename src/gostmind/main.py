@@ -17,6 +17,7 @@ from .domain.exceptions import (
 )
 from .deps import verify_api_key
 from .infrastructure.cache.redis_client import close_redis_client
+from .infrastructure.llm.ollama_client import close_ollama_client
 
 # Настройка логирования
 structlog.configure(
@@ -48,6 +49,7 @@ async def lifespan(app: FastAPI):
     # Shutdown: очистка ресурсов
     logger.info("Application shutdown")
     await close_redis_client()
+    await close_ollama_client()
 
 
 def create_app() -> FastAPI:

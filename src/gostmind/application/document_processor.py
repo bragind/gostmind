@@ -2,12 +2,11 @@
 from typing import List, Optional
 import structlog
 import chromadb
-from openai import AsyncOpenAI
 
 from ..domain.models.standard import Standard
 from ..domain.exceptions import VectorStoreError
 from ..infrastructure.vector_store.chroma_client import get_collection
-from ..infrastructure.vector_store.embedder import Embedder
+from ..infrastructure.vector_store.local_embedder import LocalEmbedder
 
 logger = structlog.get_logger(__name__)
 
@@ -17,7 +16,7 @@ class DocumentProcessor:
     
     def __init__(
         self,
-        embedder: Embedder,
+        embedder: LocalEmbedder,
         collection: chromadb.Collection,
         chunk_size: int = 1000,
         chunk_overlap: int = 200

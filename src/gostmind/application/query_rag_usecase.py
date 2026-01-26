@@ -1,13 +1,13 @@
 # src/gostmind/application/query_rag_usecase.py
 from typing import List, Optional
 import structlog
-from openai import AsyncOpenAI
 import chromadb
 
 from ..domain.models.query import Query, QueryResult
 from ..domain.exceptions import VectorStoreError, LLMError
 from ..infrastructure.vector_store.chroma_client import get_collection
-from ..infrastructure.vector_store.embedder import Embedder
+from ..infrastructure.vector_store.local_embedder import LocalEmbedder
+from ..infrastructure.llm.ollama_client import OllamaClient
 
 logger = structlog.get_logger(__name__)
 
@@ -17,8 +17,8 @@ class QueryRAGUseCase:
     
     def __init__(
         self,
-        llm_client: AsyncOpenAI,
-        embedder: Embedder,
+        llm_client: OllamaClient,
+        embedder: LocalEmbedder,
         collection: chromadb.Collection,
         top_k: int = 5
     ):
@@ -79,17 +79,46 @@ class QueryRAGUseCase:
             
             # 6. Получить ответ от LLM
             from ..config import settings
-            response = await self.llm_client.chat.completions.create(
-                model=settings.openai_model,
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": user_prompt}
-                ],
-                temperature=0.3,  # Низкая температура для более точных ответов
-                max_tokens=1000
-            )
             
-            answer = response.choices[0].message.content
+            # Ollama chat API возвращает поток, обрабатываем его
+            try:
+                response = await self.llm_client.chat(
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_prompt}
+                    ],
+                    temperature=settings.llm_temperature,
+                    max_tokens=settings.llm_max_tokens
+                )
+                
+                # Ollama может возвращать ответ в разных форматах
+                # Проверяем несколько вариантов
+                if isinstance(response, dict):
+                    message = response.get("message", {})
+                    if isinstance(message, dict):
+                        answer = message.get("content", "")
+                    else:
+                        answer = str(message)
+                else:
+                    answer = str(response)
+                
+                # Если ответ пустой, используем generate API как fallback
+                if not answer or answer.strip() == "":
+                    full_prompt = f"{system_prompt}\n\n{user_prompt}"
+                    answer = await self.llm_client.generate(
+                        prompt=full_prompt,
+                        temperature=settings.llm_temperature,
+                        max_tokens=settings.llm_max_tokens
+                    )
+            except Exception as e:
+                logger.warning("Chat API failed, trying generate API", error=str(e))
+                # Fallback на generate API
+                full_prompt = f"{system_prompt}\n\n{user_prompt}"
+                answer = await self.llm_client.generate(
+                    prompt=full_prompt,
+                    temperature=settings.llm_temperature,
+                    max_tokens=settings.llm_max_tokens
+                )
             
             # 7. Вычислить уверенность на основе расстояний
             avg_distance = sum(distances) / len(distances) if distances else 1.0
@@ -112,7 +141,7 @@ class QueryRAGUseCase:
             logger.error("Error processing query", query=query.text, error=str(e))
             if "chroma" in str(e).lower() or "vector" in str(e).lower():
                 raise VectorStoreError(f"Ошибка работы с векторным хранилищем: {str(e)}")
-            elif "openai" in str(e).lower() or "llm" in str(e).lower():
+            elif "ollama" in str(e).lower() or "llm" in str(e).lower() or "http" in str(e).lower():
                 raise LLMError(f"Ошибка работы с LLM: {str(e)}")
             else:
                 raise LLMError(f"Неожиданная ошибка при обработке запроса: {str(e)}")

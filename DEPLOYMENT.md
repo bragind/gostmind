@@ -10,7 +10,7 @@
    - 20GB свободного места на диске
 
 2. **Внешние сервисы**:
-   - OpenAI API ключ
+   - Ollama сервер (локальная LLM)
    - (Опционально) Управляемые БД и Redis
 
 ### Шаги развертывания
@@ -45,7 +45,9 @@ nano .env  # Отредактируйте настройки
 - `API_KEY` - используйте сильный случайный ключ
 - `CORS_ORIGINS` - укажите конкретные домены вместо `*`
 - `POSTGRES_PASSWORD` - используйте сильный пароль
-- `OPENAI_API_KEY` - ваш реальный ключ OpenAI
+- `LLM_BASE_URL` - URL вашего Ollama сервера (по умолчанию http://localhost:11434)
+- `LLM_MODEL` - название модели Ollama (например, llama3)
+- `EMBEDDING_MODEL` - модель для эмбеддингов (например, nomic-embed-text)
 
 #### 3. Запуск сервисов
 
@@ -60,7 +62,22 @@ docker-compose ps
 docker-compose logs -f app
 ```
 
-#### 4. Индексация ГОСТов
+#### 4. Настройка Ollama (в контейнере)
+
+Ollama уже включен в docker-compose.yml. После запуска контейнеров загрузите модели:
+
+```bash
+# Загрузка моделей в контейнер Ollama
+docker-compose exec ollama ollama pull llama3
+docker-compose exec ollama ollama pull nomic-embed-text
+
+# Проверка работы
+docker-compose exec ollama curl http://localhost:11434/api/tags
+```
+
+**Примечание**: Если у вас есть GPU, раскомментируйте секцию GPU в docker-compose.yml для ускорения работы.
+
+#### 5. Индексация ГОСТов
 
 ```bash
 # Поместите файлы ГОСТов в data/gosts/
@@ -70,7 +87,7 @@ docker-compose logs -f app
 docker-compose exec app python scripts/ingest_gosts.py
 ```
 
-#### 5. Проверка работоспособности
+#### 6. Проверка работоспособности
 
 ```bash
 # Health check

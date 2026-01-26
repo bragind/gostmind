@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from .config import settings
 from .infrastructure.database.session import get_session
 from .infrastructure.vector_store.chroma_client import get_chroma_client
-from .infrastructure.llm.openai_client import get_openai_client
+from .infrastructure.llm.ollama_client import get_ollama_client
 from .infrastructure.cache.redis_client import get_redis_client
 
 
@@ -36,6 +36,6 @@ async def get_vector_store():
     return get_chroma_client()
 
 
-# DI для OpenAI
+# DI для LLM (Ollama)
 async def get_llm_client():
-    return get_openai_client()
+    return get_ollama_client()

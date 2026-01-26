@@ -10,7 +10,7 @@ dependencies = [
   "alembic",
   "redis[asyncio]",
   "chromadb>=0.4.20",
-  "openai>=1.10",
+  "httpx>=0.25.0",
   "httpx",
   "python-multipart",  # для загрузки файлов
   "structlog",

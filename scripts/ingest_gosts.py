@@ -13,8 +13,7 @@ sys.path.insert(0, str(project_root / "src"))
 from gostmind.domain.models.standard import Standard
 from gostmind.application.document_processor import DocumentProcessor
 from gostmind.infrastructure.vector_store.chroma_client import get_collection
-from gostmind.infrastructure.vector_store.embedder import Embedder
-from gostmind.infrastructure.llm.openai_client import get_openai_client
+from gostmind.infrastructure.vector_store.local_embedder import LocalEmbedder, get_local_embedder
 from gostmind.infrastructure.storage.file_ops import FileStorage
 from gostmind.config import settings
 import structlog
@@ -54,8 +53,7 @@ async def main():
     
     # Инициализация компонентов
     storage = FileStorage(settings.documents_path)
-    llm_client = get_openai_client()
-    embedder = Embedder(llm_client)
+    embedder = get_local_embedder()
     collection = get_collection(settings.vector_store_collection)
     processor = DocumentProcessor(
         embedder=embedder,

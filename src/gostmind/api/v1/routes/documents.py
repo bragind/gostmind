@@ -9,7 +9,7 @@ from ...domain.models.standard import Standard
 from ...domain.exceptions import VectorStoreError
 from ...application.document_processor import DocumentProcessor
 from ...infrastructure.vector_store.chroma_client import get_collection
-from ...infrastructure.vector_store.embedder import Embedder, get_embedder
+from ...infrastructure.vector_store.local_embedder import LocalEmbedder, get_local_embedder
 from ...infrastructure.storage.file_ops import FileStorage
 from ..schemas.document import DocumentUploadResponse, DocumentInfo
 
@@ -46,7 +46,7 @@ async def upload_document(
         
         # Обработать документ
         collection = get_collection()
-        embedder = get_embedder(llm_client)
+        embedder = get_local_embedder()
         processor = DocumentProcessor(embedder=embedder, collection=collection)
         
         chunks_count = await processor.process_standard(standard)

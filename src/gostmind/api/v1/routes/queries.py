@@ -18,7 +18,7 @@ from ...domain.exceptions import (
 )
 from ...application.query_rag_usecase import QueryRAGUseCase
 from ...infrastructure.vector_store.chroma_client import get_collection
-from ...infrastructure.vector_store.embedder import Embedder, get_embedder
+from ...infrastructure.vector_store.local_embedder import LocalEmbedder, get_local_embedder
 from ...infrastructure.cache.redis_client import CacheService
 from ...config import settings
 from ..schemas.query import QueryRequest, QueryResponse
@@ -73,7 +73,7 @@ async def process_query(
         
         # Создание зависимостей
         collection = get_collection()
-        embedder = get_embedder(llm_client)
+        embedder = get_local_embedder()
         
         # Создание use case
         use_case = QueryRAGUseCase(

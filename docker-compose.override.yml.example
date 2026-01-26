@@ -1,0 +1,25 @@
+# Пример конфигурации для production с GPU
+# Скопируйте этот файл в docker-compose.override.yml и раскомментируйте нужные секции
+
+version: '3.8'
+
+services:
+  ollama:
+    # Для использования GPU раскомментируйте:
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+    
+    # Ограничения ресурсов
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: '4'
+    #       memory: 16G
+    #     reservations:
+    #       cpus: '2'
+    #       memory: 8G

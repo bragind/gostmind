@@ -21,6 +21,10 @@ services:
         condition: service_healthy
       cache:
         condition: service_healthy
+      ollama:
+        condition: service_healthy
+    networks:
+      - default
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "python", "-c", "import httpx; httpx.get('http://localhost:8000/api/v1/health', timeout=5)"]
@@ -56,7 +60,38 @@ services:
       retries: 5
     restart: unless-stopped
 
+  ollama:
+    image: ollama/ollama:latest
+    container_name: gostmind_ollama
+    volumes:
+      - ollama_data:/root/.ollama
+    ports:
+      - "11434:11434"
+    environment:
+      - OLLAMA_HOST=0.0.0.0:11434
+      - OLLAMA_KEEP_ALIVE=24h
+    healthcheck:
+      # Используем встроенную команду ollama для проверки
+      test: ["CMD-SHELL", "ollama list || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    # Для production рекомендуется использовать GPU
+    # Раскомментируйте для использования GPU:
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+    networks:
+      - default
+
 volumes:
   postgres_data:
   redis_data:
   chroma_data:
+  ollama_data:

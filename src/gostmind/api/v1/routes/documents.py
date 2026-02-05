@@ -3,13 +3,14 @@ from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
 import structlog
 from datetime import datetime
 
-from ...deps import get_llm_client, get_vector_store
-from ...domain.models.standard import Standard
-from ...domain.exceptions import VectorStoreError
-from ...application.document_processor import DocumentProcessor
-from ...infrastructure.vector_store.chroma_client import get_collection
-from ...infrastructure.vector_store.local_embedder import get_local_embedder
-from ..schemas.document import DocumentUploadResponse, DocumentInfo
+# Абсолютные импорты во избежание ошибок разрешения модулей
+from gostmind.api.deps import get_llm_client, get_vector_store
+from gostmind.domain.models.standard import Standard
+from gostmind.domain.exceptions import VectorStoreError
+from gostmind.application.document_processor import DocumentProcessor
+from gostmind.infrastructure.vector_store.chroma_client import get_collection
+from gostmind.infrastructure.vector_store.local_embedder import get_local_embedder
+from gostmind.api.v1.schemas.document import DocumentUploadResponse, DocumentInfo
 
 logger = structlog.get_logger(__name__)
 router = APIRouter()

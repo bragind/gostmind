@@ -21,15 +21,21 @@ class LocalEmbedder:
     async def embed_text(self, text: str) -> List[float]:
         """Создать эмбеддинг для одного текста."""
         try:
-            payload = {"model": self.model, "prompt": text}
+            # Согласно актуальной документации Ollama, эндпоинт для эмбеддингов:
+            # POST /api/embed
+            # с телом {"model": "...", "input": "..."} и ответом {"embeddings": [[...]]}
+            payload = {"model": self.model, "input": text}
 
-            response = await self.client.post(f"{self.base_url}/api/embeddings", json=payload)
+            response = await self.client.post(f"{self.base_url}/api/embed", json=payload)
             response.raise_for_status()
             result = response.json()
-            embedding = result.get("embedding", [])
+            embeddings = result.get("embeddings") or []
 
-            if not embedding:
-                raise ValueError("Empty embedding received")
+            # Ожидаем хотя бы один вектор
+            if not embeddings or not isinstance(embeddings, list):
+                raise ValueError("Empty or invalid embeddings received")
+
+            embedding = embeddings[0]
 
             return embedding
         except Exception as e:

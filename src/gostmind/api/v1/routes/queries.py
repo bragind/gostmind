@@ -3,15 +3,16 @@ from fastapi import APIRouter, Depends, HTTPException, status
 import structlog
 import uuid
 
-from ...deps import get_llm_client, get_vector_store, get_redis
-from ...domain.models.query import Query
-from ...domain.exceptions import VectorStoreError, LLMError, RateLimitExceededError
-from ...application.query_rag_usecase import QueryRAGUseCase
-from ...infrastructure.vector_store.chroma_client import get_collection
-from ...infrastructure.vector_store.local_embedder import get_local_embedder
-from ...infrastructure.cache.redis_client import CacheService
-from ...config import settings
-from ..schemas.query import QueryRequest, QueryResponse
+# Используем абсолютные импорты, чтобы избежать проблем с уровнем вложенности пакетов
+from gostmind.api.deps import get_llm_client, get_vector_store, get_redis
+from gostmind.domain.models.query import Query
+from gostmind.domain.exceptions import VectorStoreError, LLMError, RateLimitExceededError
+from gostmind.application.query_rag_usecase import QueryRAGUseCase
+from gostmind.infrastructure.vector_store.chroma_client import get_collection
+from gostmind.infrastructure.vector_store.local_embedder import get_local_embedder
+from gostmind.infrastructure.cache.redis_client import CacheService
+from gostmind.config import settings
+from gostmind.api.v1.schemas.query import QueryRequest, QueryResponse
 
 logger = structlog.get_logger(__name__)
 router = APIRouter()

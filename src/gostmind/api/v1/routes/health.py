@@ -3,8 +3,9 @@ from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 import structlog
 
-from ...deps import get_redis, get_vector_store
-from ...infrastructure.vector_store.chroma_client import get_chroma_client
+# Абсолютные импорты, чтобы избежать путаницы с уровнями пакетов
+from gostmind.api.deps import get_redis, get_vector_store
+from gostmind.infrastructure.vector_store.chroma_client import get_chroma_client
 
 logger = structlog.get_logger(__name__)
 router = APIRouter()

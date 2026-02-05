@@ -199,4 +199,4 @@ mypy src/
 
 ## 👥 Авторы
 
-[Укажите авторов]
+Dmitriy Bragin
